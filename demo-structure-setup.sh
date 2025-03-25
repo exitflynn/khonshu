@@ -7,4 +7,6 @@ touch test_project/.gitignore
 echo "*.log" > test_project/.gitignore
 touch test_project/debug.log
 
-python main.py -s test_project -o test_structure.md
+go run main.go -s test_project -o test_structure.md
+# or
+# python main.py -s test_project -o test_structure.md
