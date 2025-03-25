@@ -42,7 +42,10 @@ def generate_directory_structure(source_path, output_path, ignore_dirs, ignore_e
     gitignore_path = os.path.join(source_path, '.gitignore')
     gitignore_patterns = parse_gitignore(gitignore_path)
     
-    root_name = os.path.basename(source_path)
+    abs_path = os.path.abspath(source_path)
+    root_name = os.path.basename(abs_path)
+    if root_name == '.':
+        root_name = os.path.basename(os.getcwd())
     structure = [root_name]
     
     def build_tree(path, prefix=''):
@@ -90,9 +93,9 @@ def generate_directory_structure(source_path, output_path, ignore_dirs, ignore_e
 
 def main():
     parser = argparse.ArgumentParser(description='Generate project directory structure in markdown')
-    parser.add_argument('-s', '--source', default=os.getcwd(), 
+    parser.add_argument('-s', '--source', default='/', 
                         help='Absolute path to the project folder')
-    parser.add_argument('-o', '--output', default='project_structure.md', 
+    parser.add_argument('-o', '--output', default='project_structure', 
                         help='Path to save the output markdown file')
     parser.add_argument('-id', '--i_directory', default='', 
                         help='Directories to ignore, comma-separated')
@@ -114,9 +117,13 @@ def main():
                 e = '.' + e
             ignore_exts.append(e)
     
+    output_path = args.output
+    if not output_path.endswith('.md'):
+        output_path += '.md'
+    
     generate_directory_structure(
         source_path=args.source, 
-        output_path=args.output, 
+        output_path=output_path, 
         ignore_dirs=ignore_dirs, 
         ignore_exts=ignore_exts
     )
